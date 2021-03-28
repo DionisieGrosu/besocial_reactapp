@@ -1,0 +1,36 @@
+{
+    "name": "besocialreactapp",
+    "version": "1.0.0",
+    "description": "Social network on react",
+    "main": "index.js",
+    "scripts": {
+        "startServer": "nodemon server/index.js"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/DionisieGrosu/besocial_reactapp.git"
+    },
+    "author": "Dionisie Grosu",
+    "license": "ISC",
+    "bugs": {
+        "url": "https://github.com/DionisieGrosu/besocial_reactapp/issues"
+    },
+    "homepage": "https://github.com/DionisieGrosu/besocial_reactapp#readme",
+    "dependencies": {
+        "bcrypt": "^5.0.1",
+        "body-parser": "^1.19.0",
+        "busboy": "^0.2.14",
+        "dotenv": "^8.2.0",
+        "errorhandler": "^1.5.1",
+        "express": "^4.17.1",
+        "jsonwebtoken": "^8.5.1",
+        "method-override": "^3.0.0",
+        "mongoose": "^5.12.2",
+        "morgan": "^1.10.0",
+        "multer": "^1.4.2",
+        "serve-favicon": "^2.5.0"
+    },
+    "devDependencies": {
+        "nodemon": "^2.0.7"
+    }
+}
