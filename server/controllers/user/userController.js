@@ -37,9 +37,7 @@ exports.signIn = (req, res) => {
 };
 
 exports.signUp = (req, res) => {
-    const userInfo = {
-        firstName: req.body.firstName,
-        lastName: req.body.lastName,
+    var userInfo = {
         email: req.body.email,
         password: req.body.password,
         comfirmPassword: req.body.comfirmPassword
@@ -50,6 +48,7 @@ exports.signUp = (req, res) => {
         return res.status(400).send('Password and comfirm password must be tha same!!!');
     }
 
+
     bcrypt.hash(userInfo.password, Number(process.env.BCRYPT_SALT), async function (err, hash) {
 
         if (err) return res.status(500).send("Something went wrong!!!");
@@ -59,11 +58,18 @@ exports.signUp = (req, res) => {
         userInfo.password = hash;
 
 
-
+        var userDetailsResult;
         try {
 
-            await userModel.create([userInfo], { session: session });
+            userDetailsResult = await userDetailsModel.create([{ firstName: req.body.firstName, lastName: req.body.lastName }], { session: session });
 
+
+            if (!userDetailsResult) {
+                await session.abortTransaction();
+                session.endSession();
+                return res.status(500).send('Something went wrong!!!!');
+            }
+            // console.log(userDetailsResult)
         } catch (err) {
             if (err.code === 11000) {
                 // session.abortTransaction();
@@ -78,16 +84,29 @@ exports.signUp = (req, res) => {
         }
 
         try {
+
+            console.log(userDetailsResult[0]._id)
+            userInfo.userDetails = userDetailsResult[0]._id;
+            await userModel.create([userInfo], { session: session });
+        } catch (err) {
+            await session.abortTransaction();
+            session.endSession();
+            return res.status(500).send('Something went wrong!!!!');
+        }
+
+
+        try {
             const userCheckCreated = await userModel.findOne({ email: userInfo.email }).session(session);
             if (!userCheckCreated) {
                 await session.abortTransaction();
                 session.endSession();
                 return res.status(500).json({ message: 'Something went wrong!!!' });
             }
-            var userDeteails = {
-                userId: userCheckCreated._id,
-                email: userCheckCreated.email
-            }
+            // var userCreated = userCheckCreated;
+            // var userDeteails = {
+            //     userId: userCheckCreated._id,
+            //     email: userCheckCreated.email
+            // }
         } catch (err) {
             await session.abortTransaction();
             session.endSession();
@@ -97,35 +116,90 @@ exports.signUp = (req, res) => {
 
 
 
-
-        try {
-            await userDetailsModel.create([userDeteails], { session: session });
-        } catch (err) {
-            await session.abortTransaction();
-            session.endSession();
-            return res.status(500).send('Something went wrong in userDetails create!!!');
-        }
-
-
-        try {
-            const checkUserDetailsCreated = await userDetailsModel.findOne({ userId: userDeteails.userId }).session(session);
-            if (!checkUserDetailsCreated) {
-                await session.abortTransaction();
-                session.endSession();
-                return res.status(500).json({ message: 'Something went wrong!!!' });
-            }
-        } catch (err) {
-            await session.abortTransaction();
-            session.endSession();
-            return res.status(500).send('Something went wrong!!!!');
-
-        }
-
-
         await session.commitTransaction();
         session.endSession();
 
         return res.status(201).send("User created succesfully!!!")
+
+
+        // try {
+
+        //     await userModel.create([userInfo], { session: session });
+
+        // } catch (err) {
+        //     if (err.code === 11000) {
+        //         // session.abortTransaction();
+        //         session.endSession();
+        //         return res.status(400).send('User already exists!!!');
+        //     }
+
+        //     session.endSession();
+        //     console.log(err);
+        //     return res.status(500).send(err);
+
+        // }
+
+        // try {
+        //     const userCheckCreated = await userModel.findOne({ email: userInfo.email }).session(session);
+        //     if (!userCheckCreated) {
+        //         await session.abortTransaction();
+        //         session.endSession();
+        //         return res.status(500).json({ message: 'Something went wrong!!!' });
+        //     }
+        //     var userCreated = userCheckCreated;
+        //     var userDeteails = {
+        //         userId: userCheckCreated._id,
+        //         email: userCheckCreated.email
+        //     }
+        // } catch (err) {
+        //     await session.abortTransaction();
+        //     session.endSession();
+        //     console.log(err);
+        //     return res.status(500).send('Something went wrong in userCheckCreated!!!');
+        // }
+
+
+
+
+        // try {
+        //     await userDetailsModel.create([userDeteails], { session: session });
+        // } catch (err) {
+        //     await session.abortTransaction();
+        //     session.endSession();
+        //     return res.status(500).send('Something went wrong in userDetails create!!!');
+        // }
+
+
+        // try {
+        //     const checkUserDetailsCreated = await userDetailsModel.findOne({ userId: userDeteails.userId }).session(session);
+        //     if (!checkUserDetailsCreated) {
+        //         await session.abortTransaction();
+        //         session.endSession();
+        //         return res.status(500).json({ message: 'Something went wrong!!!' });
+        //     }
+
+        //     // userCreated.userDetails = mongoose.Schema.Types.ObjectId(checkUserDetailsCreated._id);
+        //     // console.log(checkUserDetailsCreated)
+        //     // await userModel.updateOne({ _id: userDeteails.userId }, userCreated);
+        //     // await userModel.aggregate([{ $addFields: { userDetails: checkUserDetailsCreated._id } }]).exec(async function (err, result) {
+        //     //     if (err) {
+        //     //         await session.abortTransaction();
+        //     //         session.endSession();
+        //     //         return res.status(500).send('Something went wrong!!!!');
+        //     //     }
+
+        //     //     console.log(result)
+        //     // });
+        //     // const findedUser = await userModel.findOneAndUpdate({ id: userDeteails._id }, { userDetails: checkUserDetailsCreated._id });
+        //     // console.log(findedUser)
+
+        // } catch (err) {
+        //     await session.abortTransaction();
+        //     session.endSession();
+        //     return res.status(500).send('Something went wrong!!!!');
+
+        // }
+
 
         // if (err) return res.status(500).send("Something went wrong!!!");
 
@@ -182,7 +256,7 @@ exports.signUp = (req, res) => {
 
 exports.getUserDetails = (req, res) => {
 
-    userDetailsModel.findOne({ userId: req.userInfo._id }).then(userDetail => {
+    userModel.findOne({ _id: req.userInfo._id }, 'userDetails').populate([{ path: 'userDetails', select: '-_id' }]).then(userDetail => {
         if (!userDetail) {
             return res.status(404).send("User info not found!!!");
         }
@@ -197,16 +271,19 @@ exports.getUserDetails = (req, res) => {
 
 exports.getUserShortInfo = (req, res) => {
     if (req.params) {
-        userDetailsModel.findOne({ userId: req.params.userId }).then(userDetail => {
+        userModel.findOne({ _id: req.params.userId }, 'userDetails').populate([{ path: 'userDetails' }]).then(userDetail => {
 
             if (!userDetail) {
                 return res.status(404).send("User info not found!!!");
             }
+            console.log(userDetail);
             const userShortInfo = {
-                status: userDetail.status,
-                avatar: userDetail.avatar,
-                friends: userDetail.friends.lenght > 6 ? userDetail.friends.slice(5) : userDetail.friends,
-                groups: userDetail.groups.lenght > 6 ? userDetail.groups.slice(5) : userDetail.groups
+                firstName: userDetail.userDetails.firstName,
+                lastName: userDetail.userDetails.lastName,
+                status: userDetail.userDetails.status,
+                avatar: userDetail.userDetails.avatar,
+                friends: userDetail.userDetails.friends.lenght > 6 ? userDetail.friends.slice(5) : userDetail.friends,
+                groups: userDetail.userDetails.groups.lenght > 6 ? userDetail.groups.slice(5) : userDetail.groups
             };
 
             return res.status(200).json(userShortInfo);
@@ -261,21 +338,120 @@ exports.addUserImage = (req, res) => {
     }
 }
 
-exports.getAllMessages = (req, res) => {
+exports.getAllMessages = async(req, res) => {
 
-    messagesModel.find().where('senterId').equals(req.userInfo._id).and('recieverId').equals(req.params.userId).or('recieverId').equals(req.userInfo._id).and('senterId').equals(req.params.userId).then(result => {
-        if (!result) {
-            return res.status(404).json({ message: 'Message not found!!!' });
-        }
+    messagesModel.find({ $and: [{ $or: [{ $and: [{ recieverId: req.params.userId }, { senterId: req.userInfo._id }] }, { $and: [{ recieverId: req.userInfo._id }, { senterId: req.params.userId }] }] }, { deleted: false }] }).populate([{ path: 'senterId', populate: { path: 'userDetails', select: ['firstName', 'lastName', 'avatar'] }, select: 'email' }, { path: 'recieverId', populate: { path: 'userDetails', select: ['firstName', 'lastName', 'avatar'] }, select: 'email' }])
+        .then(result => {
 
-        return res.status(200).json(result);
-    }).catch(err => {
-        return res.status(500).json({ err: err });
-    })
+            if (!result) {
+                return res.status(404).json({ message: 'Message was not found!!!' });
+            }
+
+            return res.status(200).json(result);
+
+        }).catch(err => res.status(500).json({ err: err }));
+
+
+    // messagesModel.find({ $or: [{ $and: [{ recieverId: req.params.userId }, { senterId: req.userInfo._id }] }, { $and: [{ recieverId: req.userInfo._id }, { senterId: req.params.userId }] }] })
+    //     .populate('user').exec().then(result => {
+    //         if (!result) {
+    //             return res.status(404).json({ message: 'Message not found!!!' });
+    //         }
+
+    //         return res.status(200).json(result);
+    //     }).catch(err => {
+    //         if (err.path == "recieverId" && err.value == req.params.userId) {
+    //             return res.status(404).json({ err: "Message not found!!!" })
+    //         }
+    //         return res.status(500).json({ err: err });
+    //     })
+
+    // messagesModel.find({ $or: [{ $and: [{ recieverId: req.params.userId }, { senterId: req.userInfo._id }] }, { $and: [{ recieverId: req.userInfo._id }, { senterId: req.params.userId }] }] })
+    //     .populate('user').exec(function (err, result) {
+    //         if (err) {
+    //             return res.status(500).json({ err: err });
+    //         }
+    //         return res.status(200).json(result);
+    //     })
+
+    // var result = await messagesModel.aggregate([{ $match: { senterId: req.userInfo._id } }, { $lookup: { from: "UserDetails", localField: "recieverId", foreignField: "userId", as: "userDet" } }]);
+    // return res.status(200).json(result);
+    // .exec(function (err, result) {
+    //     if (err) {
+    //         return res.status(500).json({ err: err });
+    //     }
+    //     return res.status(200).json({ err, result });
+    // });
+    // messagesModel.find().populate('user').exec(function (err, result) {
+
+    //     if (err) {
+    //         return res.status(500).json({ err: err });
+    //     }
+
+    //     return res.status(200).json(result);
+    // })
+
+    // messagesModel.aggregate().lookup({ from: 'User', localField: 'senterId', foreignField: '_id', as: 'users' }).exec(function (err, result) {
+    //     if (err) {
+    //         return res.status(500).json({ err: err });
+    //     }
+
+    //     return res.status(200).json(result);
+    // });
+    //.then(result => res.status(200).json(result)).catch(err => res.status(500).json({ err: err }));
+
+
+    // messagesModel.find().populate([{ path: 'senterId', populate: { path: 'userRef' } }]).exec(function (err, result) {
+    //     if (err) {
+    //         return res.status(500).json({ err: err });
+    //     }
+
+    //     return res.status(200).json(result);
+    // })
+
+
 
 }
 
 exports.getLastMessages = (req, res) => {
+
+    console.log(req)
+    messagesModel.find({ $and: [{ $or: [{ senterId: req.userInfo._id }, { recieverId: req.userInfo._id }] }, { deleted: false }] }).populate([{ path: 'senterId', populate: { path: 'userDetails', select: ['firstName', 'lastName', 'avatar'] }, select: 'email' }, { path: 'recieverId', populate: { path: 'userDetails', select: ['firstName', 'lastName', 'avatar'] }, select: 'email' }]).then(result => {
+            if (!result) {
+                return res.staut(404).json({ err: err });
+            }
+
+            return res.status(200).json(result);
+        }).catch(err => res.status(500).json({ err: err }))
+        // messagesModel.find({ $or: [{ $and: [{ recieverId: req.params.userId }, { senterId: req.userInfo._id }] }, { $and: [{ recieverId: req.userInfo._id }, { senterId: req.params.userId }] }] })
+        //     .populate('userId').then(result => {
+        //         if (!result) {
+        //             return res.status(404).json({ message: 'Message not found!!!' });
+        //         }
+
+    //         return res.status(200).json(result);
+    //     }).catch(err => {
+    //         if (err.path == "recieverId" && err.value == req.params.userId) {
+    //             return res.status(404).json({ err: "Message not found!!!" })
+    //         }
+    //         return res.status(500).json({ err: err });
+    //     })
+
+    // messagesModel.find({ $or: [{ $and: [{ recieverId: req.params.userId }, { senterId: req.userInfo._id }] }, { $and: [{ recieverId: req.userInfo._id }, { senterId: req.params.userId }] }] })
+    //     .populate('senterId').exec().then(result => {
+    //         if (!result) {
+    //             return res.status(404).json({ message: 'Message not found!!!' });
+    //         }
+
+    //         return res.status(200).json(result);
+    //     }).catch(err => {
+    //         if (err.path == "recieverId" && err.value == req.params.userId) {
+    //             return res.status(404).json({ err: "Message not found!!!" })
+    //         }
+    //         return res.status(500).json({ err: err });
+    //     })
+
+
 
 }
 
@@ -338,7 +514,7 @@ exports.addMessage = (req, res) => {
 
     busboy.on('finish', function () {
         messagesModel.create(messageData).then(result => res.status(201).json({ message: 'Message was created succesfully!!!' })).catch(err => res.status(500).json({ message: 'Something went wrong!!!' }));
-        return res.status(201).json(messageData);
+        // return res.status(201).json(messageData);
     })
     return req.pipe(busboy);
 
