@@ -17,6 +17,7 @@ mongoose.connect(process.env.MONGODB_URL, { useNewUrlParser: true, useUnifiedTop
 
 //Routes
 const userRouter = require('./routes/user/userRoutes');
+const groupsRouter = require('./routes/groups/groupsRouter');
 const app = express();
 
 
@@ -43,6 +44,7 @@ if ('development' == app.get('env')) {
 
 // app.use('/');
 app.use('/user', userRouter);
+app.use('/group', groupsRouter);
 // app.use('/profile');
 // app.use('/messages');
 // app.use('/settings')

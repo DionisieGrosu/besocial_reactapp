@@ -11,8 +11,9 @@ const userDetailsSchema = Schema({
     phoneNumber: Number,
     avatar: mongoose.Schema.Types.ObjectId,
     mainImage: String,
-    friends: [mongoose.Schema.Types.ObjectId],
-    groups: [mongoose.Schema.Types.ObjectId],
+    friends: [{ type: mongoose.Schema.Types.ObjectId, ref: 'UsersFriends' }],
+    groups: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Groups' }],
+    posts: [{ type: mongoose.Schema.Types.ObjectId, ref: 'UsersPosts' }],
     createdAt: { type: Date, required: true, default: new Date() },
     updatedAt: { type: Date, required: true, default: new Date() }
 });

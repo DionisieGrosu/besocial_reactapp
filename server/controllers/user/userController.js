@@ -3,6 +3,7 @@ const { userModel } = require('../../models/userModels/userModel');
 const { userDetailsModel } = require('../../models/userModels/userDetailsModel');
 const { userImagesModel } = require('../../models/userModels/userImagesModel');
 const { messagesModel } = require('../../models/messagesModels/messagesModel');
+const { usersPostsModel } = require('../../models/postsModels/usersPosts');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const Busboy = require('busboy');
@@ -521,5 +522,64 @@ exports.addMessage = (req, res) => {
 
     console.log(messageData)
         // messagesModel.create(messageData).then(result => res.status(201).json({ message: 'Message was created succesfully!!!' })).catch(err => res.status(500).json({ message: 'Something went wrong!!!' }));
+
+}
+
+
+exports.getUsersPosts = (req, res) => {
+
+    usersPostsModel.find({ author: req.params.userId }).populate([{ path: 'author', select: ['userDetails'], populate: { path: 'userDetails', select: ['firstName', 'lastName', 'avatar'] } }]).then(result => {
+
+        if (!result) {
+            return res.status(404).json({ message: 'Post was not found!!!' });
+        }
+
+        return res.status(200).json(result);
+    }).catch(err => res.status(500).json({ err: 'Something went wrong!!!' }))
+}
+
+exports.addPost = (req, res) => {
+
+    const postData = {
+        author: req.userInfo._id,
+        uploadsFiles: [],
+    }
+
+    var busboy = new Busboy({ headers: req.headers });
+    const extArray = ['jpg', 'png', 'txt'];
+
+    busboy.on('field', function (fieldname, val) {
+
+        postData[fieldname] = val;
+
+    });
+
+    busboy.on('file', function (fieldname, file, filename, encoding, mimetype) {
+        if (fieldname == 'attachment') {
+            const ext = filename.split('.')[filename.split('.').length - 1];
+            if (extArray.includes(ext)) {
+                filename = String(Math.floor(Math.random() * 1000000000));
+                var saveTo = path.join(__dirname.substr(0, __dirname.indexOf('server') + 6) + '/userPostsUploadedFiles/', path.basename(filename) + '.' + ext);
+                // console.log(saveTo);
+                file.pipe(fs.createWriteStream(saveTo));
+            } else {
+                return res.status(500).json({ message: 'Incorrect file!!!' })
+            }
+
+            postData.uploadsFiles.push(saveTo);
+
+        } else {
+            return res.status(500).json({ message: 'Something went wrong!!!' })
+        }
+    });
+    busboy.on('error', function (err) {
+        return res.status(500).json({ message: 'Something went wrong!!!' });
+    });
+
+    busboy.on('finish', function () {
+        usersPostsModel.create(postData).then(result => res.status(201).json({ message: 'Post was created succesfully!!!' })).catch(err => res.status(500).json({ message: 'Something went wrong!!!' }));
+        // return res.status(201).json(messageData);
+    })
+    return req.pipe(busboy);
 
 }
