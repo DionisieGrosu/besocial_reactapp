@@ -1,0 +1,76 @@
+@font-face {
+    font-family: 'Nunito';
+    font-style: normal;
+    font-weight: 400;
+    font-display: swap;
+    src: local('Nunito Regular'), local('Nunito-Regular'), url(https://fonts.gstatic.com/s/nunito/v11/XRXV3I6Li01BKofINeaBTMnFcQ.woff2) format('woff2');
+    unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
+@font-face {
+    font-family: "RajdhaniLight";
+    font-style: normal;
+    font-display: swap;
+    font-weight: 300;
+    src: url("./fonts/Rajdhani-Light.woff2") format("woff2"), url("./fonts/Rajdhani-Light.woff") format("woff");
+}
+
+@font-face {
+    font-family: "RajdhaniRegular";
+    font-style: normal;
+    font-display: swap;
+    font-weight: 400;
+    src: url("./fonts/Rajdhani-Regular.woff2") format("woff2"), url("./fonts/Rajdhani-Regular.woff") format("woff");
+}
+
+@font-face {
+    font-family: "RajdhaniBold";
+    font-style: normal;
+    font-display: swap;
+    font-weight: 700;
+    src: url("./fonts/Rajdhani-Bold.woff2") format("woff2"), url("./fonts/Rajdhani-Bold.woff") format("woff");
+}
+
+@font-face {
+    font-family: "RajdhaniMedium";
+    font-style: normal;
+    font-display: swap;
+    font-weight: 500;
+    src: url("./fonts/Rajdhani-Medium.woff2") format("woff2"), url("./fonts/Rajdhani-Medium.woff") format("woff");
+}
+
+@font-face {
+    font-family: "RajdhaniSemiBold";
+    font-style: normal;
+    font-display: swap;
+    font-weight: 600;
+    src: url("./fonts/Rajdhani-SemiBold.woff2") format("woff2"), url("./fonts/Rajdhani-SemiBold.woff") format("woff");
+}
+
+@font-face {
+    font-family: "TitilliumWebBold";
+    font-style: normal;
+    font-display: swap;
+    font-weight: 700;
+    src: url("./fonts/TitilliumWeb-Bold.woff2") format("woff2"), url("./fonts/TitilliumWeb-Bold.woff") format("woff");
+}
+
+@font-face {
+    font-family: "TitilliumWebBlack";
+    font-style: normal;
+    font-display: swap;
+    font-weight: 900;
+    src: url("./fonts/TitilliumWeb-Black.woff2") format("woff2"), url("./fonts/TitilliumWeb-Black.woff") format("woff");
+}
+
+:root {
+    --header-color: #615dfa;
+    --background-main-color: #f8f8fb;
+    --button-primary-color: #1bc5d4;
+    --active-color: #1bc5d4;
+    --button-secondary-color: #615dfa;
+    --button-secondary-hover-color: #5753e4;
+    --bold-font-color: #9596a7;
+    --desabled-font-color: #adafca;
+    --icons-color: #adafca;
+}

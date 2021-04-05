@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 const { userModel } = require('../../models/userModels/userModel');
 const { userDetailsModel } = require('../../models/userModels/userDetailsModel');
-const { groupsModel } = require('../../models/groupsModels/groupsModel')
+const { groupsModel } = require('../../models/groupsModels/groupsModel');
 const { groupsPostsModel } = require('../../models/postsModels/groupsPosts');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
@@ -268,4 +268,17 @@ exports.deleteGroupe = (req, res) => {
     groupsModel.findOneAndDelete({ _id: req.params.groupeId, adminId: req.userInfo._id }).then(result => {
         return res.status(200).json({ message: 'Groupe was deleted succesfully!!!' });
     }).catch(err => res.status(500).json({ err: err }))
+}
+
+exports.subscribe = (req, res) => {
+    groupsModel.updateOne({ _id: req.params.groupeId }, { $push: { subscribers: req.userInfo._id } }).then(result => {
+        if (!result) {
+            return res.status(500).json({ err: 'Something went wrong!!!' })
+        }
+        if (result.subscribers.filter(val => val === req.userInfo._id).lenght === 0) {
+            return res.status(500).json({ err: 'Something went wrong!!!' });
+        }
+
+        return res.status(200).json({ message: 'You were subscribed successfully!!!' });
+    }).catch(err => res.status(500).json({ err: err }));
 }
