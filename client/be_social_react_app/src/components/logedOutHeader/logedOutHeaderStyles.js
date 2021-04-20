@@ -1,12 +1,13 @@
 const styles = {
   navbur: {
     display: 'flex',
-    height: 80,
+    height: 60,
     backgroundColor: 'var(--header-color)',
     padding: '0 20px',
     justifyContent: 'space-between',
     alignItems: 'center',
-    flex: '1',
+    paddingBottom: 5,
+    // flex: '1',
   },
   logo: {
     color: 'white',

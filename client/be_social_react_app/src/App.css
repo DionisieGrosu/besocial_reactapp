@@ -63,14 +63,39 @@
     src: url("./fonts/TitilliumWeb-Black.woff2") format("woff2"), url("./fonts/TitilliumWeb-Black.woff") format("woff");
 }
 
+button:active,
+button:focus {
+    outline: none;
+}
+
 :root {
+    --header-container-max-width: 1400px;
+    --container-max-width: 1200px;
     --header-color: #615dfa;
+    --header-search-color: #4e4ac8;
     --background-main-color: #f8f8fb;
     --button-primary-color: #1bc5d4;
     --active-color: #1bc5d4;
+    --active-color-opacity: rgba(27, 197, 212, .6);
     --button-secondary-color: #615dfa;
     --button-secondary-hover-color: #5753e4;
     --bold-font-color: #9596a7;
     --desabled-font-color: #adafca;
     --icons-color: #adafca;
+    --main-background-color: #edf2f6;
+    --facebook-color: #3763d2;
+    --instagram-color: #f8468d;
+    --twitter-color: #27bfff;
+    --twitch-color: #7b5dfa;
+    --discord-color: #7289da;
+    --marginTop: 17px;
+    --light-gray: #eaeaf5;
+}
+
+body {
+    background-color: var(--main-background-color);
+}
+
+.containr {
+    max-width: var(--container-max-width);
 }

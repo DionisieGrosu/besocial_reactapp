@@ -1,9 +1,9 @@
-import styles from './logedOutNavBurStyles';
+import styles from './logedOutHeaderStyles';
 import { withStyles } from '@material-ui/core/styles';
 import Typography from '@material-ui/core/Typography';
 import PrimaryButtonComponent from '../commons/PrimaryButtonComponent';
 import { Switch, Route, Link } from 'react-router-dom';
-function LogedOutNavBur(props) {
+function LogedOutHeader(props) {
   const { classes } = props;
   return (
     <div className={classes.navbur}>
@@ -24,4 +24,4 @@ function LogedOutNavBur(props) {
   );
 }
 
-export default withStyles(styles)(LogedOutNavBur);
+export default withStyles(styles)(LogedOutHeader);

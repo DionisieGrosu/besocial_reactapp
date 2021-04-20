@@ -6,12 +6,15 @@ const styles = {
     fontSize: 14,
     textTransform: 'initial',
     backgroundColor: blue[300],
-    padding: '15px 25px',
+    padding: '13px 25px',
     borderRadius: 10,
     transition: 'all .5s ease',
     '&:hover': {
       backgroundColor: blue[200],
     },
+  },
+  fullWidth: {
+    minWidth: '100%',
   },
 };
 

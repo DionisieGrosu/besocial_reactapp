@@ -1,6 +1,6 @@
-import LogedOutNavBur from './../components/logedOutNavBur/LogedOutNavBur';
-import Login from './../components/loginLogupForm/LoginComponent';
-import Logup from './../components/loginLogupForm/LogupComponent';
+import LogedOutHeader from '../components/logedOutHeader/LogedOutHeader';
+import Login from '../components/loginLogupForm/LoginComponent';
+import Logup from '../components/loginLogupForm/LogupComponent';
 import { withStyles } from '@material-ui/core/styles';
 import styles from './loginPageStyle';
 import Box from '@material-ui/core/Box';
@@ -9,7 +9,7 @@ function LoginPage(props) {
   const { classes } = props;
   return (
     <>
-      <LogedOutNavBur />
+      <LogedOutHeader />
       <Box
         className={classes.loginWrap}
         display="flex"

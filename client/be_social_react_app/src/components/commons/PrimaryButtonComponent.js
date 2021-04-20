@@ -9,7 +9,7 @@ function PrimaryButtonComponent(props) {
   const { classes, children, link } = props;
   if (link) {
     return (
-      <Link className={classes.root} underline="none">
+      <Link className={`${classes.root} ${classes.fullWidth}`} underline="none">
         {children}
       </Link>
     );

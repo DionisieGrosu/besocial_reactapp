@@ -42,7 +42,7 @@ const style = (theme) => ({
     lineHeight: 1.5,
     cursor: 'pointer',
     float: 'left',
-    marginTop: '25px',
+    transform: 'translateY(5px)',
   },
 });
 
