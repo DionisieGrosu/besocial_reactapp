@@ -8,7 +8,7 @@ import Paper from '@material-ui/core/Paper';
 import Carousel from 'react-slick';
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
-import NavBarButton from './NavBarButton';
+import NavBarButton from '../buttons/NavBarButton';
 import { FaAngleLeft, FaAngleRight } from 'react-icons/fa';
 
 function SampleNextArrow(props) {

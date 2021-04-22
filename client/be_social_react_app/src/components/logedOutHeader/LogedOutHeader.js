@@ -1,7 +1,7 @@
 import styles from './logedOutHeaderStyles';
 import { withStyles } from '@material-ui/core/styles';
 import Typography from '@material-ui/core/Typography';
-import PrimaryButtonComponent from '../commons/PrimaryButtonComponent';
+import PrimaryButtonComponent from '../buttons/PrimaryButtonComponent';
 import { Switch, Route, Link } from 'react-router-dom';
 function LogedOutHeader(props) {
   const { classes } = props;

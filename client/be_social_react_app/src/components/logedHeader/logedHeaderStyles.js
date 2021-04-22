@@ -1,12 +1,15 @@
 const styles = (theme) => ({
   navbur: {
+    position: 'fixed',
     display: 'flex',
+    width: '100%',
     height: 60,
     backgroundColor: 'var(--header-color)',
     padding: '0 20px',
     justifyContent: 'space-between',
     alignItems: 'center',
     flex: '1',
+    zIndex: '999',
   },
   logo: {
     color: 'white',
@@ -122,6 +125,16 @@ const styles = (theme) => ({
     position: 'relative',
     [theme.breakpoints.down('sm')]: {
       display: 'none',
+    },
+  },
+  sideBurToggleButton: {
+    height: '100%',
+    color: 'var(--icons-color)',
+    transition: 'all .5s ease',
+    fontSize: '20px',
+    '&:hover': {
+      color: '#fff',
+      backgroundColor: 'transparent',
     },
   },
 });

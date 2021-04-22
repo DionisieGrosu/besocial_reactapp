@@ -11,7 +11,7 @@ import { Avatar } from '@material-ui/core';
 import { FaRegHeart } from 'react-icons/fa';
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
-import PrimaryButtonComponent from '../commons/PrimaryButtonComponent';
+import PrimaryButtonComponent from '../buttons/PrimaryButtonComponent';
 
 function PaperComponent(props) {
   const {
